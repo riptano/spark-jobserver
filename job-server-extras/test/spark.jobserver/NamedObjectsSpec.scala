@@ -1,13 +1,15 @@
 package spark.jobserver
 
-import akka.actor.{ ActorRef, ActorSystem, Props }
-import akka.testkit.{ ImplicitSender, TestKit }
-import org.apache.spark.{ SparkContext, SparkConf }
-import org.apache.spark.sql.{ SQLContext, Row, DataFrame }
-import org.apache.spark.sql.types._
+import akka.actor.ActorSystem
+import akka.testkit.{ImplicitSender, TestKit}
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spark.storage.StorageLevel
-import org.scalatest.{ Matchers, FunSpecLike, FunSpec, BeforeAndAfterAll, BeforeAndAfter }
+import org.apache.spark.{SparkConf, SparkContext}
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpecLike, Matchers}
+
+import scala.concurrent.duration._
 
 /**
  * this Spec is a more complex version of the same one in the job-server project,
@@ -111,7 +113,7 @@ class NamedObjectsSpec extends TestKit(ActorSystem("NamedObjectsSpec")) with Fun
       val df2: NamedDataFrame = namedObjects.getOrElseCreate("df", {
         generatorCalled = true
         throw new RuntimeException("ERROR")
-      })(1234, dataFramePersister)
+      })(1234 millis, dataFramePersister)
       generatorCalled should equal(false)
       df2 should equal(df1)
     }
@@ -165,7 +167,7 @@ class NamedObjectsSpec extends TestKit(ActorSystem("NamedObjectsSpec")) with Fun
             obj = Some(r)
             //System.err.println("creator finished")
             r
-          })(99, dataFramePersister)
+          })(99 millis, dataFramePersister)
         }
       }
 
@@ -174,7 +176,7 @@ class NamedObjectsSpec extends TestKit(ActorSystem("NamedObjectsSpec")) with Fun
           //System.err.println(ix + " started")
           namedObjects.getOrElseCreate("sleep", {
             throw new IllegalArgumentException("boo!")
-          })(60, dataFramePersister)
+          })(60 millis, dataFramePersister)
         }
       }
       creatorThread.start
