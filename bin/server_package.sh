@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script for packaging all the job server files to .tar.gz for Mesos or other single-image deploys
-WORK_DIR="$TMPDIR"/job-server
+WORK_DIR="$TMPDIR"/tmp/job-server
 
 ENV=$1
 if [ -z "$ENV" ]; then
@@ -23,7 +23,6 @@ if [ ! -f "$configFile" ]; then
 fi
 . $configFile
 
-set -x
 majorRegex='([0-9]+\.[0-9]+)\.[0-9]+'
 if [[ $SCALA_VERSION =~ $majorRegex ]]
 then
@@ -49,8 +48,8 @@ FILES="job-server-extras/target/scala-$majorVersion/spark-job-server.jar
        bin/manager_start.sh
        bin/setenv.sh
        $CONFIG_DIR/$ENV.conf
-       config/shiro.ini
-       config/logback-server.xml"
+       config/logback-server.xml
+       config/shiro.ini"
 
 rm -rf $WORK_DIR
 mkdir -p $WORK_DIR

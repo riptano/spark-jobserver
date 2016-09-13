@@ -63,6 +63,7 @@ cmd='"$DSE" spark-submit --class $MAIN --driver-memory $JOBSERVER_MEMORY
   --conf "spark.executor.extraJavaOptions=$LOGGING_OPTS"
   --driver-java-options "$GC_OPTS $JAVA_OPTS $LOGGING_OPTS $CONFIG_OVERRIDES"
   $@ $appdir/spark-job-server.jar $conffile'
+
 if [ -z "$JOBSERVER_FG" ]; then
   eval $cmd > $LOG_DIR/server_start.log 2>&1 < /dev/null &
   echo $! > $PIDFILE
