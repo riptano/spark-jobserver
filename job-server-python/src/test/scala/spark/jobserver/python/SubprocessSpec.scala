@@ -315,7 +315,7 @@ class SubprocessSpec extends FunSpec with Matchers with BeforeAndAfterAll {
 
     it("should have non-zero exit code if the underlying job fails during run") {
       val jobConfig = ConfigFactory.parseString("""input.strings = ["a", "a", "b"]""")
-      val endpoint =
+    ssss  val endpoint =
         TestEndpoint(jsc, conf, jobConfig, "example_jobs.failing_job.FailingRunJob", sparkContextImports)
       val gw = buildGateway(endpoint)
       val process =
