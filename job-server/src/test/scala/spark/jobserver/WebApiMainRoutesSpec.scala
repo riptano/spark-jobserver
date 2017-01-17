@@ -344,7 +344,7 @@ class WebApiMainRoutesSpec extends WebApiSpec {
       }
     }
 
-    it("sync route should return Ok with ERROR in JSON response if job failed") {
+    it("sync route should return Ok with error in JSON response if job failed") {
       Post("/jobs?appName=err&classPath=com.abc.meme&context=one&sync=true", " ") ~>
           sealRoute(routes) ~> check {
         status should be (OK)
