@@ -43,8 +43,10 @@ if [ -z "$LOG_DIR" ]; then
 fi
 mkdir -p $LOG_DIR
 
-LOGGING_OPTS="-Dlogback.configurationFile=file:$appdir/logback-server.xml
-              -DLOG_DIR=$LOG_DIR"
+# used in server_start and in manager_start
+LOGGING_OPTS_FILE="-Dlogback.configurationFile=file:$appdir/logback-server.xml"
+
+LOGGING_OPTS="$LOGGING_OPTS_FILE -DLOG_DIR=$LOG_DIR"
 
 # For Mesos
 CONFIG_OVERRIDES="-Dspark.executor.uri=$SPARK_EXECUTOR_URI "
