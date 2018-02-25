@@ -3,18 +3,22 @@ package spark.jobserver
 import java.io.IOException
 import java.nio.file.{Files, Paths}
 import java.nio.charset.Charset
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ExecutorService, Executors, TimeUnit}
 
 import akka.actor._
 import akka.cluster.Cluster
 import akka.cluster.ClusterEvent.{MemberUp, MemberEvent, InitialStateAsEvents}
 import akka.util.Timeout
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.typesafe.config.{Config, ConfigFactory, ConfigRenderOptions}
 import ooyala.common.akka.InstrumentedActor
 import spark.jobserver.util.SparkJobUtils
+
 import scala.collection.mutable
 import scala.util.{Try, Success, Failure}
 import scala.sys.process._
+
+import scala.collection.concurrent.TrieMap
 
 /**
  * The AkkaClusterSupervisorActor launches Spark Contexts as external processes
@@ -50,8 +54,10 @@ class AkkaClusterSupervisorActor(daoActor: ActorRef) extends InstrumentedActor {
   //TODO: try to pass this state to the jobManager at start instead of having to track
   //extra state.  What happens if the WebApi process dies before the forked process
   //starts up?  Then it never gets initialized, and this state disappears.
-  private val contextInitInfos = mutable.HashMap.empty[String, (Boolean, ActorRef => Unit, Throwable => Unit)]
-
+  private val contextInitInfos = TrieMap.empty[String, (Boolean, ActorRef => Unit, Throwable => Unit)]
+  private val contextInitExecutorService = Executors.newCachedThreadPool(
+    new ThreadFactoryBuilder().setDaemon(true).setNameFormat("job-server-context-init-thread -% d").build
+  )
   // actor name -> (JobManagerActor ref, ResultActor ref)
   private val contexts = mutable.HashMap.empty[String, (ActorRef, ActorRef)]
 
@@ -212,26 +218,31 @@ class AkkaClusterSupervisorActor(daoActor: ActorRef) extends InstrumentedActor {
       cmdString = cmdString + s" ${contextConfig.getString("spark.proxy.user")}"
     }
 
-    val pb = Process(cmdString)
-    val pio = new ProcessIO(_ => (),
-                        stdout => scala.io.Source.fromInputStream(stdout)
-                          .getLines.foreach(println),
-                        stderr => scala.io.Source.fromInputStream(stderr).getLines().foreach(println))
-    logger.info("Starting to execute sub process {}", pb)
-    val processStart = Try {
-      val process = pb.run(pio)
-      val exitVal = process.exitValue()
-      if (exitVal != 0) {
-        throw new IOException("Failed to launch context process, got exit code " + exitVal)
+    contextInitInfos(contextActorName) = (isAdHoc, successFunc, failureFunc)
+
+    contextInitExecutorService.submit(new Runnable {
+      override def run(): Unit = {
+        val pb = Process(cmdString)
+        val pio = new ProcessIO(_ => (),
+          stdout => scala.io.Source.fromInputStream(stdout)
+            .getLines.foreach(println),
+          stderr => scala.io.Source.fromInputStream(stderr).getLines().foreach(println))
+
+        logger.info("Starting to execute sub process {}", pb)
+        val processStart = Try {
+          val process = pb.run(pio)
+          val exitVal = process.exitValue()
+          if (exitVal != 0) {
+            throw new IOException("Failed to launch context process, got exit code " + exitVal)
+          }
+        }
+
+        if (processStart.isFailure) {
+          failureFunc(processStart.failed.get)
+          contextInitInfos.remove(contextActorName)
+        }
       }
-    }
-
-    if (processStart.isSuccess) {
-      contextInitInfos(contextActorName) = (isAdHoc, successFunc, failureFunc)
-    } else {
-      failureFunc(processStart.failed.get)
-    }
-
+    })
   }
 
   private def createContextDir(name: String,
