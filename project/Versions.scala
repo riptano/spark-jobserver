@@ -1,7 +1,7 @@
 import scala.util.Properties.isJavaAtLeast
 
 object Versions {
-  lazy val spark = sys.env.getOrElse("SPARK_VERSION", "2.2.0.6")
+  lazy val spark = sys.env.getOrElse("SPARK_VERSION", "2.2.3.4")
 
   lazy val akka = "2.4.9"
   lazy val dseDriver = "1.6.2"
