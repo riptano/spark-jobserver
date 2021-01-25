@@ -297,7 +297,7 @@ lazy val publishSettings = Seq(
   autoScalaLibrary := false,
   credentials += Credentials(Path.userHome / ".sbt" / ".credentials"),
   publishMavenStyle := true,
-  publishTo := Some(sys.env("MVN_PUBLISH_REPO") at sys.env("MVN_PUBLISH_URL")), 
+  publishTo := Some(sys.env("MVN_PUBLISH_REPO") at sys.env("MVN_PUBLISH_URL")),
   licenses += ("Apache-2.0", url("http://choosealicense.com/licenses/apache/")),
   pomIncludeRepository := { _ => false },
   /** Since users are encouraged to use dse-spark-dependencies, which provides most of the needed
