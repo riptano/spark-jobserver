@@ -43,8 +43,15 @@ if [ -f "$PIDFILE" ] && kill -0 $(cat "$PIDFILE"); then
    exit 1
 fi
 
+if [ "$SEPARATE_EXECUTOR_LOGGING" = "true" ]
+then
+  export EXECUTOR_LOGGING_OPTS=""
+else
+  export EXECUTOR_LOGGING_OPTS="$LOGGING_OPTS"
+fi
+
 cmd='$SPARK_HOME/bin/spark-submit --class $MAIN --driver-memory $JOBSERVER_MEMORY
-  --conf "spark.executor.extraJavaOptions=$LOGGING_OPTS"
+  --conf "spark.executor.extraJavaOptions=$EXECUTOR_LOGGING_OPTS"
   --driver-java-options "$GC_OPTS $JAVA_OPTS $LOGGING_OPTS $CONFIG_OVERRIDES"
   $@ $appdir/spark-job-server.jar $conffile'
 
