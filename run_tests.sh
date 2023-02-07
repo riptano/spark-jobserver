@@ -2,6 +2,8 @@
 
 set -e
 
+export TERM=xterm-color
+
 echo "Running sbt test and coverage report"
 sbt clean coverage testPython test coverageReport
 echo "Running pep8 over .py files"
