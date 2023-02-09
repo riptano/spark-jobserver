@@ -105,10 +105,10 @@ lazy val jobServerPythonSettings = revolverSettings ++ Assembly.settings ++ publ
 )
 
 lazy val jobServerTestJarSettings = Seq(
-  libraryDependencies ++= sparkDeps ++ apiDeps,
+  libraryDependencies ++= sparkDeps ++ apiDeps ++ slickTestDeps,
   publishArtifact := false,
   description := "Test jar for Spark Job Server",
-  exportJars := true        // use the jar instead of target/classes
+  exportJars := true // use the jar instead of target/classes
 )
 
 lazy val noPublishSettings = Seq(
@@ -265,7 +265,8 @@ lazy val publishSettings = Seq(
   autoScalaLibrary := false,
   credentials += Credentials(Path.userHome / ".sbt" / ".credentials"),
   publishMavenStyle := true,
-  publishTo := Some(sys.env("MVN_PUBLISH_REPO") at sys.env("MVN_PUBLISH_URL")),
+  publishTo := Some(sys.env.getOrElse("MVN_PUBLISH_REPO", "NONE") 
+    at sys.env.getOrElse("MVN_PUBLISH_URL", "NONE")),
   licenses += ("Apache-2.0", url("http://choosealicense.com/licenses/apache/")),
   pomIncludeRepository := { _ => false },
   /** Since users are encouraged to use dse-spark-dependencies, which provides most of the needed
