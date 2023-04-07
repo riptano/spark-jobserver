@@ -27,15 +27,22 @@ JAVA_OPTS="-XX:MaxDirectMemorySize=$MAX_DIRECT_MEMORY
 
 MAIN="spark.jobserver.JobManager"
 
+if [ "$SEPARATE_EXECUTOR_LOGGING" = "true" ]
+then
+  export EXECUTOR_LOGGING_OPTS=""
+else
+  export EXECUTOR_LOGGING_OPTS="$LOGGING_OPTS"
+fi
+
 if [ ! -z $3 ]; then
   cmd='$SPARK_HOME/bin/spark-submit --class $MAIN --driver-memory $JOBSERVER_MEMORY
-  --conf "spark.executor.extraJavaOptions=$LOGGING_OPTS"
+  --conf "spark.executor.extraJavaOptions=$EXECUTOR_LOGGING_OPTS"
   --proxy-user $3
   --driver-java-options "$GC_OPTS $JAVA_OPTS $LOGGING_OPTS $CONFIG_OVERRIDES"
   $appdir/spark-job-server.jar $1 $2 $conffile'
 else
   cmd='$SPARK_HOME/bin/spark-submit --class $MAIN --driver-memory $JOBSERVER_MEMORY
-  --conf "spark.executor.extraJavaOptions=$LOGGING_OPTS"
+  --conf "spark.executor.extraJavaOptions=$EXECUTOR_LOGGING_OPTS"
   --driver-java-options "$GC_OPTS $JAVA_OPTS $LOGGING_OPTS $CONFIG_OVERRIDES"
   $appdir/spark-job-server.jar $1 $2 $conffile'
 fi
