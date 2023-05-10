@@ -32,14 +32,13 @@ object Dependencies {
   )
 
   lazy val sparkExtraDeps = Seq(
-    "org.apache.derby" % "derby" % derby % Provided excludeAll(excludeNettyIo, excludeQQ),
+    "org.apache.derby" % "derby" % derby % Provided excludeAll(excludeQQ),
     "org.apache.hadoop" % "hadoop-client" % hadoop % Provided
-      excludeAll(excludeNettyIo, excludeQQ, excludeAsm, excludeServlet),
-    "com.datastax.spark" %% "spark-mllib" % spark % Provided excludeAll(excludeNettyIo, excludeQQ),
-    "com.datastax.spark" %% "spark-sql" % spark % Provided excludeAll(excludeNettyIo, excludeQQ),
-    "com.datastax.spark" %% "spark-streaming" % spark % Provided excludeAll(excludeNettyIo, excludeQQ),
-    "com.datastax.spark" %% "spark-hive" % spark % Provided excludeAll(
-      excludeNettyIo, excludeQQ, excludeScalaTest
+      excludeAll(excludeQQ, excludeAsm, excludeServlet),
+    "com.datastax.spark" %% "spark-mllib" % spark % Provided excludeAll(excludeQQ),
+    "com.datastax.spark" %% "spark-sql" % spark % Provided excludeAll(excludeQQ),
+    "com.datastax.spark" %% "spark-streaming" % spark % Provided excludeAll(excludeQQ),
+    "com.datastax.spark" %% "spark-hive" % spark % Provided excludeAll(excludeQQ, excludeScalaTest
       )
   )
 
@@ -67,8 +66,7 @@ object Dependencies {
 
 
   lazy val cassandraDeps = Seq(
-    "com.datastax.dse" % "spark-connector" % cassandraConnector % Provided excludeAll(
-      excludeNettyIo, excludeQQ)
+    "com.datastax.dse" % "spark-connector" % cassandraConnector % Provided excludeAll(excludeQQ)
   )
 
   lazy val logbackDeps = Seq(
