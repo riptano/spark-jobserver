@@ -12,7 +12,7 @@ object Assembly {
         "jetty", "jsp-api-2.0", "antlr", "avro", "slf4j-log4j", "log4j-1.2",
         "scala-actors", "commons-cli", "stax-api", "mockito", "lz4",
         // we rely on whatever version DSE has:
-        "spark", "netty", "dse-java-driver").exists(cp.data.getName.startsWith(_))
+        "spark", "dse-java-driver").exists(cp.data.getName.startsWith(_))
     } },
     // We don't need the Scala library, Spark already includes it
     assembleArtifact in assemblyPackageScala := false,
