@@ -1,5 +1,5 @@
 object Versions {
-  lazy val spark = sys.env.getOrElse("SPARK_VERSION", "2.4.0.7")
+  lazy val spark = sys.env.getOrElse("SPARK_VERSION", "2.4.0.30-6d2bdc654")
 
   lazy val akka = "2.4.9"
   lazy val dseDriver = "1.7.0"
