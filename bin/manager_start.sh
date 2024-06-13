@@ -17,9 +17,7 @@ get_abs_script_path
 LOGGING_OPTS="$LOGGING_OPTS_FILE
               -DLOG_DIR=$5"
 
-GC_OPTS="-XX:+UseConcMarkSweepGC
-         -verbose:gc -XX:+PrintGCTimeStamps
-         -XX:MaxPermSize=512m
+GC_OPTS="-verbose:gc
          -XX:+CMSClassUnloadingEnabled "
 
 JAVA_OPTS="-XX:MaxDirectMemorySize=$MAX_DIRECT_MEMORY
@@ -48,7 +46,7 @@ elif [ $2 == "cluster" ]; then
 else
   JAR_FILE="$appdir/spark-job-server.jar"
   CONF_FILE="$conffile"
-  GC_OPTS="$GC_OPTS -Xloggc:$5/gc.out"
+  GC_OPTS="$GC_OPTS -Xlog:gc:$5/gc.out"
 fi
 
 if [ -n "$6" ]; then
