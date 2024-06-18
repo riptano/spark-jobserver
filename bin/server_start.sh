@@ -20,7 +20,8 @@ get_abs_script_path
 
 . $appdir/setenv.sh
 
-GC_OPTS="-XX:+UseConcMarkSweepGC
+GC_OPTS="-XX:+IgnoreUnrecognizedVMOptions
+         -XX:+UseConcMarkSweepGC
          -verbose:gc -XX:+PrintGCTimeStamps -Xloggc:$appdir/gc.out
          -XX:MaxPermSize=512m
          -XX:+CMSClassUnloadingEnabled "

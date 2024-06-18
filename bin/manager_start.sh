@@ -17,7 +17,8 @@ get_abs_script_path
 LOGGING_OPTS="$LOGGING_OPTS_FILE
               -DLOG_DIR=$5"
 
-GC_OPTS="-XX:+UseConcMarkSweepGC
+GC_OPTS="-XX:+IgnoreUnrecognizedVMOptions
+         -XX:+UseConcMarkSweepGC
          -verbose:gc -XX:+PrintGCTimeStamps
          -XX:MaxPermSize=512m
          -XX:+CMSClassUnloadingEnabled "
