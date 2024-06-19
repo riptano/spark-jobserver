@@ -20,7 +20,10 @@ get_abs_script_path
 
 . $appdir/setenv.sh
 
-GC_OPTS="-verbose:gc -Xlog:gc:$appdir/gc.out
+GC_OPTS="-XX:+IgnoreUnrecognizedVMOptions
+         -XX:+UseConcMarkSweepGC
+         -verbose:gc -XX:+PrintGCTimeStamps -Xloggc:$appdir/gc.out
+         -XX:MaxPermSize=512m
          -XX:+CMSClassUnloadingEnabled "
 
 # To truly enable JMX in AWS and other containerized environments, also need to set
