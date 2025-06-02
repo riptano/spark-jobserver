@@ -84,7 +84,7 @@ object Dependencies {
 
   lazy val securityDeps = Seq(
     "org.apache.shiro" % "shiro-core" % shiro,
-    "commons-beanutils" % "commons-beanutils" % beanutils
+    "commons-beanutils" % "commons-beanutils" % beanutils exclude("commons-logging", "commons-logging")
   )
 
   lazy val serverDeps = apiDeps
