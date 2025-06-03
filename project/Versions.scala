@@ -28,5 +28,5 @@ object Versions {
   lazy val sprayJson = "1.3.5"
   lazy val typeSafeConfig = if (isJavaAtLeast("1.8")) "1.3.0" else "1.2.1"
   lazy val cassandraConnector = "6.0.9"
-  lazy val beanutils = "1.9.4"
+  lazy val beanutils = "1.11.0"
 }

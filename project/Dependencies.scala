@@ -84,15 +84,15 @@ object Dependencies {
 
   lazy val securityDeps = Seq(
     "org.apache.shiro" % "shiro-core" % shiro,
-    "commons-beanutils" % "commons-beanutils" % beanutils
+    "commons-beanutils" % "commons-beanutils" % beanutils exclude("commons-logging", "commons-logging")
   )
 
   lazy val serverDeps = apiDeps
   lazy val apiDeps = sparkDeps ++ miscDeps :+ typeSafeConfigDeps :+ scalaTestDep
 
   val repos = Seq(
-    "datastax-release" at "https://repo.sjc.dsinternal.org/artifactory/datastax-releases-local",
-    "Typesafe Repo" at "http://repo.typesafe.com/typesafe/releases/",
+    "datastax-release" at "https://repo.aws.dsinternal.org/artifactory/datastax-releases-local",
+    "Typesafe Repo" at "https://repo.typesafe.com/typesafe/releases/",
     "sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
     "spray repo" at "http://repo.spray.io"
   )
